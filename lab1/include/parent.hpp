@@ -3,6 +3,6 @@
 
 #include <string>
 
-void ParentRoutine(std::string& fileName);
+void ParentRoutine(const std::string& fileName);
 
 #endif //OS_LABS_PARENT_H

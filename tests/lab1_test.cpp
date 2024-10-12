@@ -12,14 +12,11 @@ TEST(Lab1Test, CorrectSum) {
     std::ostringstream outputStream;
     std::cout.rdbuf(outputStream.rdbuf());
 
-    const char* pathToExecChild = "/home/getz66/OS/os_labs/build/lab1/child";
-    setenv("PATH_TO_EXEC_CHILD", pathToExecChild, 1);
-
-    std::string fileName = "test.txt"; // тест вызывается из той папки, где находится test.txt
+    std::string fileName = "test.txt"; // Tест вызывается из той папки, где находится test.txt
     
-    // содержимое text.txt:
+    //Cодержимое text.txt:
     //100 10 50
-    //40
+    //40 -10 10
 
     int expectedOutput = 200;
 

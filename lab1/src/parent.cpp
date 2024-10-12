@@ -7,7 +7,7 @@
 #include <string>
 #include "parent.hpp"
 
-void ParentRoutine(std::string& fileName) {
+void ParentRoutine(const std::string& fileName) {
     int pipe1[2];
     
     if (pipe(pipe1) == -1) {
