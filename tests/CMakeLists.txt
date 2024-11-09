@@ -18,4 +18,11 @@ add_executable(lab1_test lab1_test.cpp ../lab1/src/parent.cpp ../lab1/include/pa
 target_link_libraries(lab1_test PRIVATE GTest::GTest)
 target_include_directories(lab1_test PRIVATE ../lab1/include)
 
+add_executable(lab2_test lab2_test.cpp ../lab2/include/filter.h ../lab2/src/filter.cpp)
+
+target_link_libraries(lab2_test PRIVATE GTest::GTest)
+target_include_directories(lab2_test PRIVATE ../lab2/include)
+
+add_test(lab2_test lab2_test)
+
 add_test(lab1_test lab1_test)
