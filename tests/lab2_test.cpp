@@ -99,15 +99,17 @@ TEST(ConvolutionTest, MultiThreadIsFasterThanSingleThread) {
         {0.1, 0.1, 0.1}
     };
     
+    int iterations = 1;
+
     auto startSingle = std::chrono::high_resolution_clock::now();
-    ApplyConvolution(largeMatrix, kernel, 1, 1);  // Однопоточная версия
+    ApplyConvolution(largeMatrix, kernel, iterations, 1);  // Однопоточная версия
     auto endSingle = std::chrono::high_resolution_clock::now();
     auto singleThreadTime = std::chrono::duration_cast<std::chrono::milliseconds>(endSingle - startSingle).count();
 
     auto startMulti = std::chrono::high_resolution_clock::now();
-    ApplyConvolution(largeMatrix, kernel, 1, 8);  // Многопоточная версия
+    ApplyConvolution(largeMatrix, kernel, iterations, 10);  // Многопоточная версия
     auto endMulti = std::chrono::high_resolution_clock::now();
     auto multiThreadTime = std::chrono::duration_cast<std::chrono::milliseconds>(endMulti - startMulti).count();
 
-    ASSERT_GT(singleThreadTime, multiThreadTime);
+    EXPECT_GT(singleThreadTime, multiThreadTime);
 }
