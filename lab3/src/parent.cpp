@@ -92,7 +92,7 @@ void ParentRoutine(const std::string& fileName, std::ostream& output) {
     }
 
     // Читаем результат из памяти
-    int result = 0;
+    long int result = 0;
     memcpy(&result, mappedMemory, sizeof(result));
 
     output << result << std::endl;
