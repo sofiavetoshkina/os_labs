@@ -1,18 +1,12 @@
 #include <gtest/gtest.h>
+#include <sstream>
 #include <string>
-
-#include <parent.hpp>
-
+#include "parent.hpp"
 
 TEST(Lab1Test, CorrectSum) {
-    // Сохраняем старый буфер стандартного вывода
-    std::streambuf* oldCoutBuf = std::cout.rdbuf();
 
-    // Создаем строковый поток для захвата вывода
     std::ostringstream outputStream;
-    std::cout.rdbuf(outputStream.rdbuf());
-
-    std::string fileName = "test.txt"; // Tест вызывается из той папки, где находится test.txt
+    std::string fileName = getenv("PATH_TO_TEST_FILE");
     
     //Cодержимое text.txt:
     //100 10 50
@@ -20,19 +14,13 @@ TEST(Lab1Test, CorrectSum) {
 
     int expectedOutput = 200;
 
-    // Выполняем функцию
-    ParentRoutine(fileName);
+    ParentRoutine(fileName, outputStream);
 
-    // Восстанавливаем старый буфер
-    std::cout.rdbuf(oldCoutBuf);
-
-    // Получаем захваченный вывод как строку
     std::string output = outputStream.str();
 
     std::istringstream iss(output);
-    int number = 0;
-    iss >> number;
+    int realOutput = 0;
+    iss >> realOutput;
 
-    // Проверяем, совпадает ли вывод с ожидаемым результатом
-    EXPECT_EQ(number, expectedOutput);
+    EXPECT_EQ(realOutput, expectedOutput);
 }
