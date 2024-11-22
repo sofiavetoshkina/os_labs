@@ -25,6 +25,12 @@ void ParentRoutine(const std::string& fileName, std::ostream& output) {
 
     size_t fileSize = fileStat.st_size;
 
+    if (fileSize == 0) {
+        output << 0 << std::endl;
+        close(fileFd);
+        return;
+    }
+
     // Создаем отображаемый файл
     int shmFd = shm_open("/shared_memory", O_CREAT | O_RDWR, 0666);
     if (shmFd < 0) {
