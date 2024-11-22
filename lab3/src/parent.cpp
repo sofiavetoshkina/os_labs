@@ -5,27 +5,12 @@
 #include <sys/wait.h>
 #include <unistd.h>
 #include <cstring>
-#include <csignal>
+#include <semaphore.h>
 #include <string>
 #include <stdexcept>
 #include "parent.hpp"
 
-// Глобальная переменная для обработки сигнала
-volatile sig_atomic_t childDone = 0;
-
-void SignalHandler(int) {
-    childDone = 1;
-}
-
 void ParentRoutine(const std::string& fileName, std::ostream& output) {
-    // Устанавливаем обработчик сигнала
-    struct sigaction sa {};
-    sa.sa_handler = SignalHandler;
-
-    if (sigaction(SIGUSR1, &sa, nullptr) == -1) {
-        throw std::runtime_error("Ошибка установки обработчика сигнала");
-    }
-
     // Открываем файл на чтение
     int fileFd = open(fileName.c_str(), O_RDONLY);
     if (fileFd < 0) {
@@ -71,25 +56,37 @@ void ParentRoutine(const std::string& fileName, std::ostream& output) {
 
     close(fileFd);
 
+    // Создаем и открываем семафор
+    sem_t* sem = sem_open("/semaphore", O_CREAT, 0666, 0);
+    if (sem == SEM_FAILED) {
+        close(shmFd);
+        munmap(mappedMemory, fileSize);
+        throw std::runtime_error("Ошибка создания семафора");
+    }
+
     // Создаем дочерний процесс
     pid_t pid = fork();
     if (pid < 0) {
         close(shmFd);
         munmap(mappedMemory, fileSize);
+        sem_unlink("/semaphore");
         throw std::runtime_error("Ошибка создания дочернего процесса");
     }
 
     if (pid == 0) {
         // Дочерний процесс
         const char* pathToChild = getenv("PATH_TO_EXEC_CHILD");
+        if (pathToChild == nullptr) {
+            perror("Переменная PATH_TO_EXEC_CHILD не установлена");
+            exit(1);
+        }
         execl(pathToChild, pathToChild, std::to_string(fileSize).c_str(), nullptr);
         perror("Ошибка запуска дочернего процесса");
         exit(1);
     }
 
-    while (!childDone) {
-        pause(); // Ожидание сигнала
-    }
+    // Ожидаем завершения дочернего процесса
+    sem_wait(sem);
 
     // Читаем результат из памяти
     long int result = 0;
@@ -101,4 +98,5 @@ void ParentRoutine(const std::string& fileName, std::ostream& output) {
     close(shmFd);
     munmap(mappedMemory, fileSize);
     shm_unlink("/shared_memory");
+    sem_unlink("/semaphore");
 }

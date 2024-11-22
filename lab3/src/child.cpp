@@ -1,9 +1,9 @@
 #include <fcntl.h>
 #include <iostream>
 #include <sys/mman.h>
-#include <csignal>
 #include <unistd.h>
 #include <cstring>
+#include <semaphore.h>
 
 int main(int argc, char* argv[]) {
     if (argc != 2) {
@@ -38,8 +38,14 @@ int main(int argc, char* argv[]) {
     // Записываем результат в начало памяти
     memcpy(mappedMemory, &sum, sizeof(sum));
 
-    // Отправляем сигнал родительскому процессу
-    kill(getppid(), SIGUSR1);
+    sem_t* sem = sem_open("/semaphore", 0);
+    if (sem == SEM_FAILED) {
+        close(shmFd);
+        munmap(mappedMemory, fileSize);
+        perror("Ошибка sem_open в дочернем процессе");
+        return 1;
+    }
+    sem_post(sem);
 
     // Очистка
     close(shmFd);
