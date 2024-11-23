@@ -15,7 +15,7 @@ TEST(ParentRoutineTest, CalculatesSumCorrectly) {
     //100 10 50
     //40 -10 10
 
-    int expectedOutput = 200;
+    const int expectedOutput = 200;
 
     ParentRoutine(fileName, outputStream);
 
@@ -35,7 +35,7 @@ TEST(ParentRoutineTest, EmptyFile) {
             exit(1);
     }
     
-    int expectedOutput = 0;
+    const int expectedOutput = 0;
 
     ParentRoutine(fileName, outputStream);
 
@@ -59,7 +59,7 @@ TEST(ParentRoutineTest, CalculatesSumCorrectly2) {
     //100 10 50
     //40 -10 10 100000 0
 
-    int expectedOutput = 100200;
+    const int expectedOutput = 100200;
 
     ParentRoutine(fileName, outputStream);
 
@@ -69,5 +69,4 @@ TEST(ParentRoutineTest, CalculatesSumCorrectly2) {
     iss >> realOutput;
 
     EXPECT_EQ(realOutput, expectedOutput);
-    
 }
