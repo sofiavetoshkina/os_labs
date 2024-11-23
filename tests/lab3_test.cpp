@@ -5,7 +5,11 @@
 
 TEST(ParentRoutineTest, CalculatesSumCorrectly) {
     std::ostringstream outputStream;
-    std::string fileName = getenv("PATH_TO_TEST_FILE");
+    const char* fileName = getenv("PATH_TO_TEST_FILE");
+    if (fileName == nullptr) {
+            perror("Переменная PATH_TO_TEST_FILE не установлена");
+            exit(1);
+    }
     
     //Cодержимое test.txt:
     //100 10 50
@@ -25,7 +29,11 @@ TEST(ParentRoutineTest, CalculatesSumCorrectly) {
 
 TEST(ParentRoutineTest, EmptyFile) {
     std::ostringstream outputStream;
-    std::string fileName = getenv("PATH_TO_EMPTY_TEST_FILE");
+    const char* fileName = getenv("PATH_TO_EMPTY_TEST_FILE");
+    if (fileName == nullptr) {
+            perror("Переменная PATH_TO_EMPTY_TEST_FILE не установлена");
+            exit(1);
+    }
     
     int expectedOutput = 0;
 
@@ -41,7 +49,11 @@ TEST(ParentRoutineTest, EmptyFile) {
 
 TEST(ParentRoutineTest, CalculatesSumCorrectly2) {
     std::ostringstream outputStream;
-    std::string fileName = getenv("PATH_TO_TEST_FILE2");
+    const char* fileName = getenv("PATH_TO_TEST_FILE2");
+    if (fileName == nullptr) {
+            perror("Переменная PATH_TO_TEST_FILE2 не установлена");
+            exit(1);
+    }
     
     //Cодержимое test2.txt:
     //100 10 50
