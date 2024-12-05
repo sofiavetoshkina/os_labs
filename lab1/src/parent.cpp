@@ -7,7 +7,7 @@
 #include <string>
 #include "parent.hpp"
 
-void ParentRoutine(const std::string& fileName) {
+void ParentRoutine(const std::string& fileName, std::ostream& output) {
     int pipe1[2];
     
     if (pipe(pipe1) == -1) {
@@ -67,7 +67,7 @@ void ParentRoutine(const std::string& fileName) {
             char buffer[128];
             size_t bytes = read(pipe1[0], buffer, sizeof(buffer));
             if (bytes > 0){
-                std::cout << buffer;
+                output.write(buffer, bytes);
             } else {
                 perror("Read error");
                 return;
