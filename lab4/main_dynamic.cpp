@@ -49,7 +49,7 @@ int main() {
 
     char* error;
     if ((error = dlerror()) != nullptr) {
-        std::cerr << "Ошибка получения символа: " << error << "\n";
+        std::cerr << "Ошибка: " << error << "\n";
         dlclose(handle);
         return 1;
     }
