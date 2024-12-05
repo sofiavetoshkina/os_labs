@@ -89,7 +89,7 @@ int main() {
         } else if (command == 3) {
             break;
         } else {
-            std::cout << "Неверная команда\n";
+            std::cout << "Такого пункта меню не существует\n";
         }
     }
 
