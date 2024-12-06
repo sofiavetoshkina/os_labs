@@ -1,6 +1,12 @@
 #pragma once
 
+#ifdef __cplusplus
 extern "C" {
-    float Square(float A, float B);
-    int PrimeCount(int A, int B);
+#endif
+
+float Square(float A, float B);
+int PrimeCount(int A, int B);
+
+#ifdef __cplusplus
 }
+#endif
