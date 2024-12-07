@@ -28,8 +28,21 @@ add_executable(lab3_test lab3_test.cpp ../lab3/src/parent.cpp ../lab3/include/pa
 target_link_libraries(lab3_test PRIVATE GTest::GTest rt)
 target_include_directories(lab3_test PRIVATE ../lab3/include)
 
+add_executable(lab4_1_test lab4_1_test.cpp ../lab4/include/functions.h ../lab4/src/implementation1.cpp)
+
+target_link_libraries(lab4_1_test PRIVATE GTest::GTest) 
+target_include_directories(lab4_1_test PRIVATE ../lab4/include) 
+
+add_executable(lab4_2_test lab4_2_test.cpp ../lab4/include/functions.h ../lab4/src/implementation2.cpp)
+
+target_link_libraries(lab4_2_test PRIVATE GTest::GTest)
+target_include_directories(lab4_2_test PRIVATE ../lab4/include)
+
 add_test(lab1_test lab1_test)
 
 add_test(lab2_test lab2_test)
 
 add_test(lab3_test lab3_test)
+
+add_test(lab4_1_test lab4_1_test)
+add_test(lab4_2_test lab4_2_test)
