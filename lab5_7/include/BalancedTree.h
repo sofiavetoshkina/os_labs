@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef BALANCED_TREE_H
 #define BALANCED_TREE_H
 #include <bits/stdc++.h>
