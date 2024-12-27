@@ -1,4 +1,5 @@
-#include <bits/stdc++.h>
+#pragma once
+
 #include "ZMQFunctions.h"
 #include "unistd.h"
 
@@ -10,7 +11,6 @@ public:
     zmq::context_t context;
     zmq::socket_t left, right, parent;
 
-public:
     CalculationNode(int id, int parent_port, int parent_id)
         : id(id), left_id(-2), right_id(-2), parent_id(parent_id),
           left_port(0), right_port(0), parent_port(parent_port),
@@ -19,23 +19,6 @@ public:
             connect(parent, parent_port);
         }
     }
-
-    // Методы доступа для приватных переменных
-    int getId() const { return id; }
-    int getLeftId() const { return left_id; }
-    int getRightId() const { return right_id; }
-    int getParentId() const { return parent_id; }
-    int getLeftPort() const { return left_port; }
-    int getRightPort() const { return right_port; }
-    int getParentPort() const { return parent_port; }
-
-    void setId(int id_set) {  id = id_set; }
-    void setLeftId(int left_id_set) { left_id = left_id_set; }
-    void setRightId(int right_id_set) { right_id = right_id_set; }
-    void setParentId(int parent_id_set) { parent_id = parent_id_set; }
-    void setLeftPort(int left_port_set) { left_port = left_port_set; }
-    void setRightPort(int right_port_set) { right_port = right_port_set; }
-    void setParentPort(int parent_port_set) { parent_port = parent_port_set; }
 
     std::string create(int child_id) {
         int port;
@@ -50,15 +33,16 @@ public:
             right_id = child_id;
             port = right_port;
         } else {
-            return "Error: can not create the calculation node";
+            return "Error: Can not create the calculation node";
         }
 
         int fork_id = fork();
         if (fork_id == 0) {
-            if (execl("./server", "server", std::to_string(child_id).c_str(), 
+            const char* pathToServer = getenv("PATH_TO_CALCULATION_NODE");
+            if (execl(pathToServer, "server", std::to_string(child_id).c_str(),
                       std::to_string(port).c_str(), std::to_string(id).c_str(), 
                       (char*)NULL) == -1) {
-                std::cerr << "Error: can not run the execl-command" << std::endl;
+                std::cerr << "Error: Can not run the execl-command" << std::endl;
                 exit(EXIT_FAILURE);
             }
         } else {
@@ -69,18 +53,19 @@ public:
                 std::string child_pid = receive_message(childSocket);
                 return "Ok: " + child_pid;
             } catch (const std::exception& e) {
-                return "Error: can not connect to the child";
+                return "Error: Сan not connect to the child";
             }
         }
-        return "Error: unexpected error in create function";
+        return "Error: Unexpected error in create function";
     }
+
     std::string ping(int id) {
         std::string answer = "Ok: 0";
         if (this->id == id) {
             answer = "Ok: 1";
             return answer;
         }
-        else if (left_id == id) {
+        if (left_id == id) {
             std::string message = "ping " + std::to_string(id);
             send_message(left, message);
             try {
@@ -90,8 +75,7 @@ public:
                 }
             }
             catch(int){}
-        }
-        else if (right_id == id) {
+        } else if (right_id == id) {
             std::string message = "ping " + std::to_string(id);
             send_message(right, message);
             try {
@@ -107,19 +91,16 @@ public:
 
     std::string sendstring(std::string string, int id) {
         std::string answer = "Error: Parent not found";
-        if (left_id == -2 && right_id == -2) {
-            return answer;
-        }
-        else if (left_id == id) {
+        if (left_id == -2 && right_id == -2) return answer;
+        if (left_id == id) {
             if (ping(left_id) == "Ok: 1") {
                 send_message(left, string);
-                try{
+                try {
                     answer = receive_message(left);
                 }
                 catch(int){}
             }
-        }
-        else if (right_id == id) {
+        } else if (right_id == id) {
             if (ping(right_id) == "Ok: 1") {
                 send_message(right, string);
                 try {
@@ -127,8 +108,7 @@ public:
                 }
                 catch(int){}
             }
-        }
-        else {
+        } else {
             if (ping(left_id) == "Ok: 1") {
                 std::string message = "send " + std::to_string(id) + " " + string;
                 send_message(left, message);
@@ -138,9 +118,7 @@ public:
                 catch(int) {
                     message = "Error: Parent not found";
                 }
-                if (message != "Error: Parent not found") {
-                    answer = message;
-                }
+                if (message != "Error: Parent not found") answer = message;
             }
             if (ping(right_id) == "Ok: 1") {
                 std::string message = "send " + std::to_string(id) + " " + string;
@@ -151,9 +129,7 @@ public:
                 catch(int) {
                     message = "Error: Parent not found";
                 }
-                if (message != "Error: Parent not found") {
-                    answer = message;
-                }
+                if (message != "Error: Parent not found") answer = message;
             }
         }
         return answer;

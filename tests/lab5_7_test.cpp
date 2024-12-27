@@ -30,7 +30,7 @@ TEST(CalculationNodeTests, CreateNode) {
     std::string result = parentNode.create(2);
 
     EXPECT_EQ(result.substr(0, 3), "Ok:");  // Успешное создание
-    EXPECT_EQ(parentNode.getLeftId(), 2);  // Узел добавлен слева
+    EXPECT_EQ(parentNode.left_id, 2);  // Узел добавлен слева
 }
 
 TEST(CalculationNodeTests, ExecCommand) {

@@ -1,5 +1,7 @@
 #pragma once
-#include <bits/stdc++.h>
+
+#include <iostream>
+#include <string>
 #include <zmq.hpp>
 const int MAIN_PORT = 4040;
 
@@ -38,12 +40,11 @@ void disconnect(zmq::socket_t &socket, int port) {
 int bind(zmq::socket_t &socket, int id) {
     int port = MAIN_PORT + id;
     std::string address = "tcp://127.0.0.1:" + std::to_string(port);
-    while(1){
-        try{
+    while(true) {
+        try {
             socket.bind(address);
             break;
-        }
-        catch(...){
+        } catch(...) {
             port++;
         }
     }

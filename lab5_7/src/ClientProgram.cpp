@@ -1,4 +1,3 @@
-#include <bits/stdc++.h>
 #include "CalculationNode.h"
 #include "ZMQFunctions.h"
 #include "BalancedTree.h"
@@ -32,7 +31,7 @@ int main() {
                         std:: string message = "create " + std:: to_string(child);
                         answer = node.sendstring(message, idParent);
                         if (answer == "Error: Parent not found") {
-                            tree.AvailabilityCheck(idParent);
+                            tree.SetUnavailabilityNode(idParent);
                         }
                         else {
                             tree.AddInTree(child, idParent);
@@ -49,7 +48,7 @@ int main() {
             std:: cin >> child;
             getline(std:: cin, str);
             if (!tree.Exist(child)) {
-                std:: cout << "Error: Parent is not existed" << std:: endl;
+                std:: cout << "Error:" << child << ": Not found" << std:: endl;
             }
             else {
                 std:: string message = "exec " + str;
@@ -61,7 +60,7 @@ int main() {
             int child;
             std:: cin >> child;
             if (!tree.Exist(child)) {
-                std::cout << "Error: Parent is not existed" << std:: endl;
+                std::cout << "Error: Not found" << std:: endl;
             }
             else if (node.left_id == child || node.right_id == child) {
                 answer = node.ping(child);
@@ -76,41 +75,13 @@ int main() {
                 std:: cout << answer << std:: endl;
             }
         }
-        else if (command == "heartbeat") {
-            int time;
-            std:: cin >> time;
-            std:: string str;
-            std:: vector<int> not_available;
-            for (int i = 0; i < 10; ++i) {
-                for (int j : tree.ids) {
-                    std:: string answer = node.ping(j);
-                    std:: cout << answer << " " << j << std:: endl;
-                    if (answer != "Ok: 1") {
-                        not_available.push_back(j);
-                    }
-                }
-                if (not_available.empty()) {
-                    std:: cout << "Ok" << std:: endl;
-                }
-                else {
-                    std:: cout << "Next nodes are not available: ";
-                    for (std::size_t z = 0; z < not_available.size(); ++z) {
-                        std:: cout << not_available[z] << " ";
-                    }
-                    std:: cout << std:: endl;
-                    not_available.clear();
-                }
-                sleep((unsigned int)(time/1000));
-            }
-        }
         else if (command == "kill") {
             int child;
             std:: cin >> child;
             std:: string message = "kill";
             if (!tree.Exist(child)) {
-                std:: cout << "Error: Parent is not existed" << std:: endl;
-            }
-            else {
+                std:: cout << "Error: Not found" << std:: endl;
+            } else {
                 answer = node.sendstring(message, child);
                 if (answer != "Error: Parent not found") {
                     tree.RemoveFromRoot(child);
@@ -118,17 +89,15 @@ int main() {
                         unbind(node.left, node.left_port);
                         node.left_id = -2;
                         answer = "Ok";
-                    }
-                    else if (child == node.right_id) {
+                    } else if (child == node.right_id) {
                         node.right_id = -2;
                         unbind(node.right, node.right_port);
                         answer = "Ok";
+                    } else {
+                        message = "clear " + std::to_string(child);
+                        answer = node.sendstring(message, std::stoi(answer));
                     }
-                    else {
-                        message = "clear " + std:: to_string(child);
-                        answer = node.sendstring(message, std:: stoi(answer));
-                    }
-                    std:: cout << answer << std:: endl;
+                    std::cout << answer << std::endl;
                 }
             }
         }
