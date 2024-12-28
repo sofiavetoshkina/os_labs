@@ -6,7 +6,7 @@ int main() {
     std:: string command;
     CalculationNode node(-1, -1, -1);
     std:: string answer;
-    std:: cout << "Hello there! Please check out the task commands: " << std:: endl;
+    std:: cout << "Please check out the task commands: " << std:: endl;
     std:: cout << '\t' << "create id: for creating a new calculation node" << std:: endl;
     std:: cout << '\t' << "exec id n n1 n2... n: for calculating a sum" << std:: endl;
     std:: cout << '\t' << "ping id: for checking availabilty node" << std:: endl;
