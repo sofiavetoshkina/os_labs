@@ -18,5 +18,6 @@ add_subdirectory(lab3)
 add_subdirectory(lab4)
 add_subdirectory(lab5_7)
 add_subdirectory(lab8)
+add_subdirectory(cp)
 
 add_subdirectory(tests)
